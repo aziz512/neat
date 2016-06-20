@@ -1,0 +1,14 @@
+﻿@{
+    var controller = HttpContext.Current.Request.RequestContext.RouteData.Values["Controller"].ToString();
+    string cLayout = "";
+    if (controller == "Admin")
+    {
+        cLayout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+    else
+    {
+        cLayout = "~/Views/Shared/_Layout.cshtml";
+    }
+    Layout = cLayout;
+}
+<link href="~/Content/main.css" type="text/css" rel="stylesheet"/>

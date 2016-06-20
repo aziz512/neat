@@ -1,0 +1,100 @@
+﻿@using News.Models
+@model ArticleList
+
+<h2>Articles - @(ViewBag.Filter as string)</h2>
+<br />
+<p>
+    <a class="button" href="@Url.Action("AddArticle", "Admin")">
+        Add new
+    </a>
+</p>
+<p>
+    <a class="button" href="@Url.Action("AllArticles", "Admin", new { filter = "all" })">
+        All
+    </a>
+    <a class="button" href="@Url.Action("AllArticles", "Admin", new { filter = "moderated" })">
+        Only moderated
+    </a>
+    <a class="button" href="@Url.Action("AllArticles", "Admin", new { filter = "unmoderated" })">
+        Only unmoderated
+    </a>
+</p>
+<br />
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+        integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+        crossorigin="anonymous">
+</script>
+<script>
+    function checkAll() {
+        if (document.getElementById('check-all').checked) {
+            var checkboxes = document.getElementsByClassName("news-checkbox");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+        else {
+            var checkboxes = document.getElementsByClassName("news-checkbox");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+        }
+    }
+    function delete_Click(id) {
+        $('#DeleteId').val(id);
+
+        $("#SubmitDelete").click();
+    }
+</script>
+
+@using (Html.BeginForm())
+{
+    <div>
+        Action to selected:
+        @Html.DropDownListFor(x => x.Action, new List<SelectListItem>
+        {
+            new SelectListItem() {Selected = true, Text = "Delete", Value = "delete" },
+            new SelectListItem() {Text = "Unpublish", Value = "unpublish"},
+            new SelectListItem() {Text = "Publish", Value = "publish"},
+            new SelectListItem() {Text = "Change Category", Value = "category"}
+        }, new {@class = "form-control" })
+        <input type="submit" value="Apply action" class="button" />
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id = "check-all" onchange="checkAll()" /></th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Published</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Article item in Model.Articles)
+            {
+                @Html.HiddenFor(x => x.Articles[Model.Articles.IndexOf(item)].Id)
+                <tr>
+                    <td>@Html.CheckBoxFor(x => x.Articles[Model.Articles.IndexOf(item)].Checked, new {@class = "news-checkbox"})</td>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.Author</td>
+                    <td>@item.Date</td>
+                    <td>@item.Category</td>
+                    <td>@item.Moderated</td>
+                    <td>
+                        <a href="@Url.Action("EditArticle", "Admin", new { id = item.Id })"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon" /></a>
+                        <img src="~/Content/images/trashRed.png" onclick="delete_Click(@item.Id)" class="adminpanel-action-icon"/>
+                    </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+<form action="@Url.Action("DeleteArticle", "Admin")" method="post" name="DeleteForm" style="display:none">
+    <input type="text" id="DeleteId" name="id"/>
+    <input type="submit" id="SubmitDelete"/>
+</form>

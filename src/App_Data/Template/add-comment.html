@@ -1,0 +1,21 @@
+<!--
+{{Username}} - usersame
+{{FirstName}}" - users' First name
+{{LastName}}", - users' Last name
+{{GroupKey}}", - users' Group keyword (i.e. admin)
+{{AvatarURL}}" - users' Profile picture URL
+{{GroupTitle}} - users' Group title (i.e. Administrator)
+{{Email}} - users' email
+{{RootURL}} - website's root url
+-->
+<div>
+    <script src="../../Scripts/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#Comment_Content',
+            plugins: "charmap colorpicker emoticons hr importcss link nonbreaking paste tabfocus textcolor visualchars code image insertdatetime lists preview searchreplace table wordcount autolink bbcode codesample imagetools media spellchecker"
+        });
+    </script>
+    <p style="max-width:600px;"><textarea id="Comment_Content" name="Comment.Content" data-val-required="Required"></textarea></p>
+    <input type="submit" value="Add"  class="btn"/>
+</div>

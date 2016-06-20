@@ -1,0 +1,20 @@
+﻿@model News.Models.EditProfile
+@using News.Models
+@{
+    ViewBag.Title = "Edit";
+}
+
+@{
+    var user = ViewBag.User as User;
+    var authenticator = new Authenticator();
+    string template = News.Models.HelpingMethods.getTemplateValue("editProfile");
+    template = template.Replace("{{Username}}",Model.Username);
+    template = template.Replace("{{FirstName}}", Model.FirstName + "");
+    template = template.Replace("{{LastName}}", Model.LastName + "");
+    template = template.Replace("{{Email}}", Model.Email + "");
+    template = template.Replace("{{Errors}}", HelpingMethods.UnsortedListOfErrors((ViewBag.Errors as List<string>)));
+    template = template.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(Model.Username, Authenticator.AvatarURLType.Absolute));
+    template = template.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(user.Group));
+    template = template.Replace("{{GroupKey}}", user.Group);
+}
+@Html.Raw(template)

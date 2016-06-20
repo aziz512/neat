@@ -1,0 +1,59 @@
+<!--
+{{Username}} - usersame
+{{FirstName}}" - users' First name
+{{LastName}}", - users' Last name
+{{GroupKey}}", - users' Group keyword (i.e. admin)
+{{AvatarURL}}" - users' Profile picture URL
+{{GroupTitle}} - users' Group title (i.e. Administrator)
+{{Email}} - users' email
+{{BannedDue}} - Banned due to certain date
+{{PostsNum}} - number of posts
+{{CommentsNum}} - number of posts
+{{EmailVerified}} - status of email (verified or not). Possible values: True/False
+-->
+
+
+<style>
+.verify-img{
+    width:20px;
+    height:20px;
+}    
+</style>
+
+
+<h2>Profile</h2>
+
+
+<img src="{{AvatarURL}}" width="150"/>
+<p><strong>Username:</strong> {{Username}}</p>
+<p><strong>Group:</strong> {{GroupTitle}}</p>
+<p>
+    <strong>First Name:</strong> {{FirstName}}
+</p>
+<p>
+    <strong>Last Name:</strong>{{LastName}}
+</p>
+<p>
+    <strong>Posts:</strong>{{PostsNum}}
+    <a href="/Home/Index?author={{Username}}">All</a>
+</p>
+<p>
+    <strong>Comments:</strong> {{CommentsNum}}
+    <a href="/Home/Comments?author={{Username}}">All</a>
+</p>
+<email>
+    <p style="display:none" id="IsVerified">{{EmailVerified}}</p>
+    <p id="emailValues"><strong>Email:</strong> {{Email}} ||EmailVerifiedValue||</p>
+    <script>
+        if($('#IsVerified').text() == "True")
+        {
+            $('#emailValues').html($('#emailValues').html().replace('||EmailVerifiedValue||','<img class="verify-img" src="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678134-sign-check-128.png" />'));
+        }
+        else
+        {
+            $('#emailValues').html($('#emailValues').html().replace('||EmailVerifiedValue||','<img class="verify-img" src="{{RootURL}}/Content/images/cross.png" /> (<a href="{{RootURL}}/Profile/ResendVerify">Not verified. Resend verification?</a>)'));
+        }
+    </script>
+</email>
+
+<a href="../Profile/Edit" class="btn btn-primary">Edit</a>

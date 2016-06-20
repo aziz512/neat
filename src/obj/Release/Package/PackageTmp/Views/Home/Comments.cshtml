@@ -1,0 +1,32 @@
+﻿@model List<News.Models.Comment>
+@using News.Models;
+@{
+    ViewBag.Title = "Comments";
+}
+
+<h2>Comments</h2>
+@if (Model != null)
+{
+    string template = HelpingMethods.getTemplateValue("comment");
+    foreach (var comment in Model)
+    {
+        template = template.Replace("{{Author}}",comment.AuthorName);
+        template = template.Replace("{{Date}}", comment.Date.Month + "/" + comment.Date.Date + "/" + comment.Date.Year);
+        template = template.Replace("{{Content}}", comment.Content);
+        template = template.Replace("{{Id}}", comment.Id.ToString());
+        template = template.Replace("{{NewsId}}", comment.NewsId.ToString());
+
+        @:template
+            @*<div>
+                <span>@comment.AuthorName</span>
+                <span>@comment.Date.ToShortDateString()</span>
+                <a href="@Url.Action("Read","Home", new { id = comment.NewsId})">Article</a>
+                <p>@comment.Content</p>
+            </div>*@
+
+    }
+}
+else
+{
+
+}

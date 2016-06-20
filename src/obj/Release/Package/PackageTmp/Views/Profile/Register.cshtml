@@ -1,0 +1,22 @@
+﻿@model News.Models.User
+
+@{
+    ViewBag.Title = "Register";
+}
+
+
+@{
+    string template = News.Models.HelpingMethods.getTemplateValue("register");
+    string errors = "";
+    if (ViewBag.Errors != null)
+    {
+        foreach (string item in (List<string>)ViewBag.Errors)
+        {
+            errors += "<li>" + item + "</li>";
+        }
+    }
+    string validationErrors = Html.ValidationSummary().ToHtmlString().Replace("</ul>", errors + "</ul>");
+    template = template.Replace("{{Errors}}", validationErrors);
+}
+@Html.Raw(template);
+

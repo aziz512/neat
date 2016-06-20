@@ -1,0 +1,54 @@
+﻿@using News.Models
+@using News.Models
+@model List<Article>
+@{
+    ViewBag.Title = "Home Page";
+}
+@if (ViewBag.User != null)
+{
+    var user = (ViewBag.User as User);
+    <p>Hi, @user.Username!</p>
+}
+else
+{
+    <p>@Html.ActionLink("Sign in", "Login")</p>
+}
+@if (Model != null)
+{
+    var categories = (List<Category>)ViewBag.Categories;
+    Func<string, string> returnCategoryName = x =>
+    {
+        if (!String.IsNullOrWhiteSpace(x))
+        {
+            if (categories.Any(y => y.Keyword == x))
+            {
+                return categories.First(y => y.Keyword == x).Title;
+            }
+        }
+        return "";
+    };
+    string template = HelpingMethods.getTemplateValue("news");
+    foreach (Article item in Model)
+    {
+        string news = template.Replace("{{Title}}", item.Title);
+        news = news.Replace("{{Author}}", item.Author);
+        news = news.Replace("{{Content}}", item.Content);
+        news = news.Replace("{{ArticleURL}}", Url.Action("Read", "Home", new { id = item.Id }));
+        news = news.Replace("{{Date}}", item.Date.Day + "/" + item.Date.Month + "/" + item.Date.Year);
+        news = news.Replace("{{CategoryKey}}", item.Category);
+        news = news.Replace("{{CategoryName}}", returnCategoryName(item.Category));
+        @:@Html.Raw(news)
+    }
+}
+else {
+    <p>No articles in this category</p>
+}
+@if (ViewBag.CurrentPage != null && ViewBag.LastPage != null)
+{
+    <br />
+    <a href="@Url.Action("Category","Home", new {page = 1, name = (string)ViewBag.CategoryName})" class="button"><<</a>
+    <a href="@Url.Action("Category","Home", new {page = (int)ViewBag.CurrentPage - 1, name = (string)ViewBag.CategoryName})" class="button"><</a>
+    <span class="button">Page @((int)ViewBag.CurrentPage) of @((int)ViewBag.LastPage)</span>
+    <a href="@Url.Action("Category","Home", new {page = (int)ViewBag.CurrentPage + 1, name = (string)ViewBag.CategoryName})" class="button"> > </a>
+    <a href="@Url.Action("Category","Home", new {page = (int)ViewBag.LastPage, name = (string)ViewBag.CategoryName })" class="button">>></a>
+}

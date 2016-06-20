@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .admin-panel-link-block {
+        text-align:center;
+    }
+    .admin-panel-block-image {
+        width:128px;
+        height:128px;
+    }
+</style>
+<br />
+<table cellpadding="10">
+    <tr>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("MainSettings","Admin")">
+                <img src="https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/gear-128.png"
+                     class="admin-panel-block-image" />
+                <p>Main settings</p>
+            </a>
+        </td>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("AllArticles","Admin")">
+                <img src="https://cdn2.iconfinder.com/data/icons/new-year-resolutions/64/resolutions-08-128.png"
+                     class="admin-panel-block-image" />
+                <p>All news</p>
+            </a>
+        </td>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("AllGroups","Admin")">
+                <img src="https://cdn4.iconfinder.com/data/icons/linecon/512/photo-128.png"
+                     class="admin-panel-block-image" />
+                <p>User groups</p>
+            </a>
+        </td>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("Users","Admin")">
+                <img src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-128.png"
+                     class="admin-panel-block-image" />
+                <p>Users</p>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("Categories","Admin")">
+                <img src="https://cdn2.iconfinder.com/data/icons/picol-vector/32/category-256.png"
+                     class="admin-panel-block-image" />
+                <p>Categories</p>
+            </a>
+        </td>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("Comments","Admin")">
+                <img src="https://cdn1.iconfinder.com/data/icons/prettyoffice9/256/comment-edit.png"
+                     class="admin-panel-block-image" />
+                <p>Comments</p>
+            </a>
+        </td>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("AdditionalFields","Admin")">
+                <img src="https://cdn1.iconfinder.com/data/icons/hawcons/32/698913-icon-81-document-add-256.png"
+                     class="admin-panel-block-image" />
+                <p>Additional News Fields</p>
+            </a>
+        </td>
+        <td>
+            <a class="admin-panel-link-block" href="@Url.Action("EditTemplate","Admin")">
+                <img src="https://cdn2.iconfinder.com/data/icons/bitsies/128/Brush-128.png"
+                     class="admin-panel-block-image" />
+                <p>Edit the template</p>
+            </a>
+        </td>
+    </tr>
+</table>
+

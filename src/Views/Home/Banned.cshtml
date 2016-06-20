@@ -1,0 +1,42 @@
+﻿@model News.Models.User
+@using News.Models
+@{
+    ViewBag.Title = "Banned";
+    Authenticator authenticator = new Authenticator();
+}
+@{ 
+    string template = News.Models.HelpingMethods.getTemplateValue("banned");
+    template = template.Replace("{{Username}}", Model.Username);
+    template = template.Replace("{{FirstName}}", Model.FirstName);
+    template = template.Replace("{{LastName}}", Model.LastName);
+    template = template.Replace("{{GroupKey}}", Model.Group);
+    template = template.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(Model.Username, Authenticator.AvatarURLType.Absolute));
+    template = template.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(Model.Group));
+    if (Model.BannedDue.Year - DateTime.Now.Year > 50)
+    {
+        template = template.Replace("{{BannedDue}}", "Forever/unspecified");
+    }
+    else
+    {
+        template = template.Replace("{{BannedDue}}", Model.BannedDue.ToShortDateString());
+    }
+    if (ViewBag.PostsNum != null)
+    {
+        template = template.Replace("{{PostsNum}}", ((int)ViewBag.PostsNum).ToString());
+    }
+    if (ViewBag.CommentsNum != null)
+    {
+        template = template.Replace("{{CommentsNum}}", ((int)ViewBag.CommentsNum).ToString());
+    }
+    if (ViewBag.isProfileOfUser == true)
+    {
+        template = template.Replace("{{Email}}", Model.Email);
+    }
+    else
+    {
+        template = System.Text.RegularExpressions.Regex.Replace(template, @"<email>.*?<\/email>", "", System.Text.RegularExpressions.RegexOptions.Singleline);
+    }
+}
+@Html.Raw(template)
+
+

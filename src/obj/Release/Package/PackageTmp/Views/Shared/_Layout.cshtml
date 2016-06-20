@@ -1,0 +1,100 @@
+﻿@using News.Models
+@*@using News.Models
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if (ViewBag.Description != null)
+    {
+        <meta name="description" content="@ViewBag.Description" />
+    }
+    else
+    {
+        <meta name="description" content="@HelpingMethods.getSettingValue("metadesc")" />
+    }
+    @if (ViewBag.Keywords != null)
+    {
+        <meta name="keywords" content="@ViewBag.Keywords" />
+    }
+    else
+    {
+        <meta name="keywords" content="@HelpingMethods.getSettingValue("metakeywords")" />
+    }
+
+    @if (ViewBag.PageTitle != null)
+    {
+        <title>@ViewBag.PageTitle - @HelpingMethods.getSettingValue("title")</title>
+    }
+    else
+    {
+        <title>@ViewBag.Title - @HelpingMethods.getSettingValue("title")</title>
+    }
+
+    <link href="~/Content/bootstrap.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/main.css" type="text/css" rel="stylesheet" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+</body>
+</html>*@
+
+@{
+    string template = HelpingMethods.getTemplateValue("main");
+}
+@if (ViewBag.Description != null)
+{   
+    template = template.Replace("{{MetaDescription}}",ViewBag.Description);
+}
+else
+{
+    template = template.Replace("{{MetaDescription}}", HelpingMethods.getSettingValue("metadesc"));
+}
+@if (ViewBag.Keywords != null)
+{
+    template = template.Replace("{{MetaKeywords}}", ViewBag.Keywords);
+}
+else
+{
+    template = template.Replace("{{MetaKeywords}}", @HelpingMethods.getSettingValue("metakeywords"));
+}
+@if (ViewBag.PageTitle != null)
+{
+    template = template.Replace("{{Title}}", ViewBag.PageTitle + " - " + HelpingMethods.getSettingValue("title"));
+}
+else
+{
+    template = template.Replace("{{Title}}", ViewBag.Title + " - " + HelpingMethods.getSettingValue("title"));
+}
+@{ 
+    template = template.Replace("{{Content}}",RenderBody().ToHtmlString());
+    template = template.Replace("{{Login}}", Html.Partial("_LoginPartial").ToHtmlString());
+}
+@Html.Raw(template)

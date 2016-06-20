@@ -1,0 +1,46 @@
+﻿@model News.Models.User
+@using News.Models
+@{
+    ViewBag.Title = "User Profile";
+}
+<script src="~/Scripts/DateTimePicker/jquery.js"></script>
+
+
+@{
+    var authenticator = new Authenticator();
+
+    string template = HelpingMethods.getTemplateValue("profile");
+    template = template.Replace("{{Username}}", Model.Username);
+    template = template.Replace("{{FirstName}}", Model.FirstName);
+    template = template.Replace("{{LastName}}", Model.LastName);
+    template = template.Replace("{{GroupKey}}", Model.Group);
+    template = template.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(Model.Username, Authenticator.AvatarURLType.Relative));
+    template = template.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(Model.Group));
+    if (ViewBag.PostsNum != null)
+    {
+        template = template.Replace("{{PostsNum}}", ((int)ViewBag.PostsNum).ToString());
+    }
+    else
+    {
+        template = template.Replace("{{PostsNum}}", "0");
+    }
+    if (ViewBag.CommentsNum != null)
+    {
+        template = template.Replace("{{CommentsNum}}", ((int)ViewBag.CommentsNum).ToString());
+    }
+    else
+    {
+        template = template.Replace("{{CommentsNum}}", "0");
+    }
+    if (ViewBag.isProfileOfUser == true)
+    {
+        template = template.Replace("{{Email}}",Model.Email);
+        template = template.Replace("{{EmailVerified}}", Model.EmailVerified.ToString());
+    }
+    else
+    {
+        template = System.Text.RegularExpressions.Regex.Replace(template,@"<email>.*?<\/email>", "",System.Text.RegularExpressions.RegexOptions.Singleline);
+    }
+}
+
+@Html.Raw(template)

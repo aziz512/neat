@@ -1,0 +1,17 @@
+<!--
+{{RootURL}} - website's root url
+{{Errors}} - errors when submitting the form
+-->
+<h2>Register</h2>
+
+<form action="/Profile/Register" method="post">
+    <p class="validation-summary">
+        {{Errors}}
+    </p>
+    <p>Username*: <input data-val="true" data-val-required="Enter username" id="Username" name="Username" type="text" value="" /></p>
+    <p>Password*: <input data-val="true" data-val-required="Enter password" id="Password" name="Password" type="password" /></p>
+    <p>First Name: <input id="FirstName" name="FirstName" type="text" value="" /></p>
+    <p>Last Name: <input id="LastName" name="LastName" type="text" value="" /></p>
+    <p>Email*: <input data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" /></p>
+    <input type="submit" value="Register" />
+</form>

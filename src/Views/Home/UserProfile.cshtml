@@ -1,0 +1,44 @@
+﻿@model News.Models.User
+
+@{
+    ViewBag.Title = "UserProfile";
+}
+
+<h2>Profile</h2>
+
+<p><strong>Username:</strong> @Model.Username</p>
+<p><strong>Group:</strong> @Model.Group</p>
+<p>
+    <strong>First Name:</strong>
+    @if (Model.FirstName != null)
+    {
+        @Model.FirstName
+    }
+</p>
+<p><strong>Last Name:</strong>
+    @if (Model.LastName != null){		 
+        @Model.LastName
+    }
+</p>
+<p>
+    <strong>Posts:</strong>
+    @if (ViewBag.PostsNum != null)
+    {
+        @((int)ViewBag.PostsNum)
+    }
+    (<a href="@Url.Action("Index","Home", new { author = Model.Username})">All</a>)
+</p>
+<p>
+    <strong>Comments:</strong>
+    @if (ViewBag.CommentsNum != null)
+    {
+        @((int)ViewBag.CommentsNum)
+    }
+    (<a href="@Url.Action("Comments","Home", new { author = Model.Username})">All</a>)
+</p>
+@if (ViewBag.isProfileOfUser == true)
+{
+    <p><strong>Email:</strong> @Model.Email</p>
+}
+
+

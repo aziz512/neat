@@ -1,0 +1,19 @@
+﻿@model News.Models.User
+@using News.Models
+
+@{
+    ViewBag.Title = "Verify your email";
+    Authenticator authenticator = new Authenticator();
+}
+
+@{ 
+    string template = News.Models.HelpingMethods.getTemplateValue("email-confirm");
+    template = template.Replace("{{Username}}",Model.Username);
+    template = template.Replace("{{FirstName}}", Model.FirstName + "");
+    template = template.Replace("{{LastName}}", Model.LastName + "");
+    template = template.Replace("{{Email}}", Model.Email + "");
+    template = template.Replace("{{GroupKey}}", Model.Group);
+    template = template.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(Model.Group));
+    template = template.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(Model.Username, Authenticator.AvatarURLType.Absolute));
+}
+@Html.Raw(template)

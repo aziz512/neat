@@ -1,0 +1,103 @@
+﻿@model News.Models.MainModel
+@using News.Models
+@using System.Text.RegularExpressions
+@using News.Controllers
+@{
+    ViewBag.Title = "Read";
+}
+
+@{
+    var authenticator = new Authenticator();
+    var user = ViewBag.User as User;
+
+    string articleTemplate = HelpingMethods.getTemplateValue("read-article");
+    articleTemplate = articleTemplate.Replace("{{Title}}", Model.Article.Title);
+    articleTemplate = articleTemplate.Replace("{{CategoryKey}}", Model.Article.Category);
+    articleTemplate = articleTemplate.Replace("{{CategoryName}}", authenticator.ReturnCategoryName(Model.Article.Category));
+    articleTemplate = articleTemplate.Replace("{{Author}}", Model.Article.Author);
+    articleTemplate = articleTemplate.Replace("{{Date}}", Model.Article.Date.Day + "/" + Model.Article.Date.Month + "/" + Model.Article.Date.Year);
+    articleTemplate = articleTemplate.Replace("{{Content}}", Model.Article.Content);
+    articleTemplate = articleTemplate.Replace("{{Day}}", Model.Article.Date.Day.ToString());
+    articleTemplate = articleTemplate.Replace("{{Month}}", Model.Article.Date.Month.ToString());
+    articleTemplate = articleTemplate.Replace("{{Year}}", Model.Article.Date.Year.ToString());
+    articleTemplate = articleTemplate.Replace("{{Hour}}", Model.Article.Date.Hour.ToString());
+    articleTemplate = articleTemplate.Replace("{{Minutes}}", Model.Article.Date.Minute.ToString());
+    if (user != null)
+    {
+        articleTemplate = articleTemplate.Replace("{{Username}}", user.Username);
+        articleTemplate = articleTemplate.Replace("{{FirstName}}", user.FirstName);
+        articleTemplate = articleTemplate.Replace("{{LastName}}", user.LastName);
+        articleTemplate = articleTemplate.Replace("{{GroupKey}}", user.Group);
+        articleTemplate = articleTemplate.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(user.Username, Authenticator.AvatarURLType.Absolute));
+        articleTemplate = articleTemplate.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(user.Group));
+        articleTemplate = articleTemplate.Replace("{{Email}}", user.Email);
+    }
+    MatchCollection fieldsMatches = Regex.Matches(articleTemplate, "{{Field=.*?}}");
+    List<string> fieldValues = new List<string>();
+    foreach (Match item in fieldsMatches)
+    {
+        fieldValues.Add(item.Value);
+    }
+    var fieldNames = fieldValues;
+    for (int i = 0; i < fieldValues.Count; i++)
+    {
+        fieldNames[i] = Regex.Replace(fieldValues[i], "{{Field=(?<name>.*?)}}", "${name}");
+    }
+    foreach (var item in fieldNames)
+    {
+        articleTemplate = articleTemplate.Replace("{{Field=" + item + "}}", HomeController.getField(item.Trim(), Model.Article.Id));
+    }
+}
+
+
+
+@{ 
+    string commentTemplate = HelpingMethods.getTemplateValue("comment");
+}
+
+@{string comments = ""; }
+@foreach (var item in Model.Comments)
+{
+    string template = commentTemplate;
+    template = template.Replace("{{Author}}", item.AuthorName);
+    template = template.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(item.AuthorName, Authenticator.AvatarURLType.Relative));
+    template = template.Replace("{{Date}}", item.Date.Month + "/" + item.Date.Date + "/" + item.Date.Year);
+    template = template.Replace("{{Content}}", item.Content);
+    template = template.Replace("{{Id}}", item.Id.ToString());
+    template = template.Replace("{{NewsId}}", item.NewsId.ToString());
+    template = template.Replace("{{Day}}", item.Date.Day.ToString());
+    template = template.Replace("{{Month}}", item.Date.Month.ToString());
+    template = template.Replace("{{Year}}", item.Date.Year.ToString());
+    template = template.Replace("{{Hour}}", item.Date.Hour.ToString());
+    template = template.Replace("{{Minutes}}", item.Date.Minute.ToString());
+    comments += template;
+}
+
+@{ 
+    articleTemplate = articleTemplate.Replace("{{Comments}}",comments);
+}
+
+@{string addCommentHTML = ""; }
+@if (user != null)
+{
+    using (Html.BeginForm())
+    {
+        string commentForm = Html.HiddenFor(x => x.Article.Id, new { value = Model.Article.Id }).ToHtmlString() + Html.HiddenFor(x => x.Comment.AuthorName).ToHtmlString() + HelpingMethods.getTemplateValue("add-comment");
+        commentForm = commentForm.Replace("{{Username}}", user.Username);
+        commentForm = commentForm.Replace("{{FirstName}}", user.FirstName);
+        commentForm = commentForm.Replace("{{LastName}}", user.LastName);
+        commentForm = commentForm.Replace("{{GroupKey}}", user.Group);
+        commentForm = commentForm.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(user.Username, Authenticator.AvatarURLType.Relative));
+        commentForm = commentForm.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(user.Group));
+        commentForm = commentForm.Replace("{{Email}}", user.Email);
+        addCommentHTML = commentForm;
+    }
+}
+else
+{
+    addCommentHTML = HelpingMethods.getTemplateValue("add-comment-unlogged");
+}
+@{ 
+    articleTemplate = articleTemplate.Replace("{{AddComment}}", addCommentHTML);
+}
+@Html.Raw(articleTemplate)

@@ -1,0 +1,108 @@
+﻿@model News.Models.Group
+
+@{
+    ViewBag.Title = "EditGroup";
+}
+
+<h2>EditGroup</h2>
+<br />
+<div class="validation-summary">
+    @Html.ValidationSummary()
+    @if (ViewBag.Errors != null)
+    {
+        <ul>
+            @foreach (var item in (List<string>)ViewBag.Errors)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    }
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+
+        @Html.HiddenFor(x => x.Name)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, "Title",htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanAddNews, "Can add news", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanAddNews, new {style = "margin-top:10px;" })                
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanAccessAdminPanel, "Can access admin panel", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanAccessAdminPanel, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanEditNews, "Can edit news", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanEditNews, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanEditComments, "Can edit comments", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanEditComments, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanEditCategories, "Can edit categories", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanEditCategories, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanEditGroups, "Can edit groups", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanEditGroups, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanEditTemplate, "Can edit site template", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanEditTemplate, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanPostWithNoModeration, "Can make posts without moderation", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanPostWithNoModeration, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanEditUsers, "Can edit users", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanEditUsers, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanUploadImages, "Can upload images", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanUploadImages, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanUseSpecialTagsInComments, "Can use special tags(img, a) in comments", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanUseSpecialTagsInComments, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CanUseSpecialTagsInNews, "Can use special tags(img, a) in news", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(model => model.CanUseSpecialTagsInNews, new { style = "margin-top:10px;" })
+            </div>
+        </div>
+        <input type="submit" class="button" />
+    </div>
+}

@@ -1,0 +1,13 @@
+<!--
+{{RootURL}} - website's root url
+{{Errors}} - errors while logging in
+-->
+<h2>Login</h2>
+<form action="/Profile/Login" method="post">
+    <div style="color:red;">
+        {{Errors}}
+    </div>
+    <p>Username: <input data-val="true" data-val-required="Enter username" id="Username" name="Username" type="text" value="" /></p>
+    <p>Password: <input data-val="true" data-val-required="Enter password" id="Password" name="Password" type="password" /></p>
+    <input type="submit" value="Sign in" />
+</form>

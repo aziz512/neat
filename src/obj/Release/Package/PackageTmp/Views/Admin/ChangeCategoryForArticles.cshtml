@@ -1,0 +1,14 @@
+﻿@model News.Models.CategoryChangeForArticles
+@{
+    ViewBag.Title = "ChangeCategoryForArticles";
+}
+
+<h2>ChangeCategoryForArticles</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(x => x.IDs)
+    <p>Change category to: @Html.DropDownListFor(x => x.Category, (ViewBag.Categories as IEnumerable<SelectListItem>))</p>
+    <input type="submit" value="Change" class="button"/>
+}
+

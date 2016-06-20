@@ -1,0 +1,65 @@
+﻿@using News.Models
+@using News.Models
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if (ViewBag.Description != null)
+    {
+        <meta name="description" content="@ViewBag.Description" />
+    }
+    else
+    {
+        <meta name="description" content="@HelpingMethods.getSettingValue("metadesc")" />
+    }
+    @if (ViewBag.Keywords != null)
+    {
+        <meta name="keywords" content="@ViewBag.Keywords" />
+    }
+    else
+    {
+        <meta name="keywords" content="@HelpingMethods.getSettingValue("metakeywords")" />
+    }
+
+    @if (ViewBag.PageTitle != null)
+    {
+        <title>@ViewBag.PageTitle - @HelpingMethods.getSettingValue("title")</title>
+    }
+    else
+    {
+        <title>@ViewBag.Title - @HelpingMethods.getSettingValue("title")</title>
+    }
+
+    <link href="~/Content/bootstrap.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/main.css" type="text/css" rel="stylesheet" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background:#1F3A93;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Admin panel", "Index", "Admin", new { area = "" }, new { @class = "navbar-brand" , style = "color:#E4F1FE;" })
+            </div>
+            <div class="navbar-collapse collapse"> 
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home", null, new {style = "color:#E4F1FE;" })</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+</body>
+</html>

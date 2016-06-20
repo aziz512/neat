@@ -1,0 +1,24 @@
+<!--
+{{RootURL}} - website's root url
+{{Username}} - usersame
+{{FirstName}}" - users' First name
+{{LastName}}", - users' Last name
+{{GroupKey}}", - users' Group keyword (i.e. admin)
+{{AvatarURL}}" - users' Profile picture URL
+{{GroupTitle}} - users' Group title (i.e. Administrator)
+{{Email}} - users' email
+-->
+<logged>
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="{{RootURL}}/Profile/Index">Hello, {{Username}}!</a>
+        </li>
+        <li><a href="{{RootURL}}/Profile/LogOut">Log out</a></li>
+    </ul>
+</logged>
+<unlogged>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{RootURL}}/Profile/Register">Register</a></li>
+        <li><a href="{{RootURL}}/Profile/Login" id="loginLink">Log in</a></li>
+    </ul>
+</unlogged>

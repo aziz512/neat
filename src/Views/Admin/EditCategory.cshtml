@@ -1,0 +1,58 @@
+﻿@model News.Models.Category
+
+@{
+    ViewBag.Title = "EditCategory";
+}
+
+<h2>Edit Category</h2>
+<hr />
+<p class="validation-summary">
+    @Html.ValidationSummary()
+    @if (ViewBag.Errors != null)
+    {
+        foreach (var item in ViewBag.Errors)
+        {
+            Response.Write(item);
+        }
+    }
+</p>
+@using (Html.BeginForm("EditCategory", "Admin"))
+{
+    <div class="form-horizontal">
+        @Html.ValidationSummary()<br />
+        @if ((List<string>)ViewBag.Errors != null)
+        {
+            foreach (string error in (List<string>)ViewBag.Errors)
+            {
+                @error
+            }
+        }
+        <div class="form-group">
+            <label class="control-label col-md-2" style="text-align:left;">Keyword of this category</label>
+            <div class="col-md-3">
+                <p class="form-control-static">@Model.Keyword</p>
+                @Html.HiddenFor(x => x.Keyword)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" style="text-align:left;">Title of category</label>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" style="text-align:left;">Meta-description</label>
+            <div class="col-md-3">
+                @Html.TextAreaFor(x => x.Description, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" style="text-align:left;">Meta-keywords (use comma)</label>
+            <div class="col-md-3">
+                @Html.TextAreaFor(x => x.Keywords, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <input type="submit" class="btn col-md-2" value="Save" />
+    </div>
+}

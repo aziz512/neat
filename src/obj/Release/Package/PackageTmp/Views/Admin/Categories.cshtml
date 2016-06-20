@@ -1,0 +1,41 @@
+﻿@using News.Models
+@model List<Category>
+@{
+    ViewBag.Title = "Categories";
+}
+
+<h2>Categories</h2>
+<br />
+<a href="@Url.Action("AddCategory","Admin")" class="button">Add new</a>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Keyword</th>
+            <th>Title</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Category item in Model)
+        {
+            <tr>
+                <td>@item.Keyword</td>
+                <td>@item.Title</td>
+                <td>
+                    <a href="@Url.Action("EditCategory","Admin", new { keyword = item.Keyword } )"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon"/></a>
+                    @using (Html.BeginForm("DeleteCategory", "Admin", new { keyword = item.Keyword, withArticles = "false" }, FormMethod.Post, new {style = "display:inline-block;" }))
+                    {
+                      <input type="image" src="~/Content/images/trashBlue.png" title="(articles will be moved to different category)" class="adminpanel-action-icon"/>
+                    }
+                    @using (Html.BeginForm("DeleteCategory", "Admin", new { keyword = item.Keyword, withArticles = "true" }, FormMethod.Post, new { style = "display:inline-block;" }))
+                    {
+                        <input type="image" src="~/Content/images/trashRed.png" title="(Delete with all articles in this category)" class="adminpanel-action-icon"/>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

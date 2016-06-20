@@ -1,0 +1,196 @@
+﻿@using News.Models
+@{
+    ViewBag.Title = "EditTemplate";
+    var folders = (string[])ViewBag.Folders;
+    var files = (List<TemplateFile>)ViewBag.Files;
+}
+
+<h2>Edit Template</h2>
+<style>
+    .listElement:hover {
+        cursor: pointer;
+    }
+    .left-block {
+        height:500px;
+        width:20%;
+        overflow:scroll;
+        display:inline-block;
+        vertical-align:top;
+        margin-top:30px;
+    }
+    .right-block{
+        width:78%;
+        padding:0;
+        margin:0;
+        display:inline-block;
+        vertical-align:top;
+    }
+    
+    #editor {
+        height:500px;
+        width:100%;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    #save{
+        width:150px;
+        margin-top:5px;
+        display:none;
+    }
+
+</style>
+<link href="~/Scripts/bootstrap.min.js" type="text/css" rel="stylesheet"/>
+<script src="~/Scripts/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+        integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+        crossorigin="anonymous"></script>
+
+<div>
+    <div class="left-block">
+        <ul style="list-style-type:none; padding-left:0;">
+            @foreach (var item in folders)
+            {
+                <li class="listElement folder" data-folder-name="@item"><img src="~/Content/images/folder.png" width="20" />@item</li>
+                foreach (var file in files.Where(x => x.ParentFolder == item))
+                {
+                    <li class="listElement file" data-file-name="@file.FileName" data-parent-folder="@item"><img src="~/Content/images/file.png" width="20" style="margin-left:10px;" />@file.FileName</li>
+                }
+            }
+            @foreach (var file in files.Where(x => x.ParentFolder == "{root}"))
+            {
+                <li class="listElement file" data-parent-folder="{root}" data-file-name="@file.FileName"><img src="~/Content/images/file.png" width="20" />@file.FileName</li>
+            }
+           
+        </ul>
+    </div>
+    <div class="right-block">
+        <p id="Status" style="height:30px; padding:0; margin:0;"></p>
+        <pre id="editor">Select file from the left to edit</pre>
+        <button class="btn btn-success" id="save">Save</button>
+    </div>
+    
+    <script>
+        ace.require("ace/ext/language_tools");
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/tomorrow");
+        editor.session.setMode("ace/mode/html");
+        var currentfileName = "{none}";
+        var currentParentFolder = "{root}";
+        var timer;
+
+        function clearStatus() {
+            $('#Status').css("color", "black");
+            $('#Status').text(currentfileName);
+        }
+
+        $(".file").click(
+            function () {
+                var fileName = $(this).data('file-name');
+                var parentFolder = $(this).data('parent-folder');
+                currentfileName = fileName;
+                currentParentFolder = parentFolder;
+
+                $('#save').show();
+                $.get('@Url.Action("GetTemplate")', { fileName: $(this).data('file-name'), parentFolder: $(this).data('parent-folder') })
+                    .done(
+                        function (data) {
+
+                            $('#Status').removeAttr('style').css("color", "green");
+                            $('#Status').text(currentfileName + " - open successfully");
+                            clearTimeout(timer);
+                            timer = window.setTimeout(clearStatus, 3000);
+
+
+                            editor.setValue(data);
+                            editor.focus();
+                            editor.gotoLine(0);
+
+                            var isJs = new RegExp("[A-Za-z-0-9_]+(.js)$").test(fileName);
+                            var isTxt = new RegExp("[A-Za-z-0-9_]+(.txt)$").test(fileName);
+                            var isCSS = new RegExp("[A-Za-z-0-9_]+(.css)$").test(fileName);
+                            var isHTML = new RegExp("[A-Za-z-0-9_]+(.html)$").test(fileName);
+                            if (isJs) {
+                                editor.session.setMode("ace/mode/javascript");
+                            }
+                            else if (isHTML) {
+                                editor.session.setMode("ace/mode/html");
+                            }
+                            else if (isCSS) {
+                                editor.session.setMode("ace/mode/css");
+                            }
+                            else {
+                                editor.session.setMode("ace/mode/text");
+                            }
+                            editor.setOptions({
+                                enableBasicAutocompletion: true
+                            });
+                        }
+                    )
+                    .fail(
+                        function () {
+                            $('#Status').removeAttr('style').css("color", "red");
+                            $('#Status').text(currentfileName + " - can't open");
+                            clearTimeout(timer);
+                            timer = window.setTimeout(clearStatus, 3000);
+                        }
+                    );
+            }
+        );
+
+        $('.folder').click(
+            function () {
+                var folderName = $(this).data("folder-name");
+                var elements = $('.listElement');
+                $.each(elements, function (i, element) {
+                    if ($(this).data("parent-folder") == folderName) {
+                        if ($(this).is(":visible")) {
+                            $(this).hide();
+                        }
+                        else {
+                            $(this).show();
+                        }
+
+                    }
+                });
+            }
+         );
+
+        $('#save').click(
+            function () {
+                var newValue = editor.getValue();
+                if (currentfileName != "{none}") {
+                    $.post("@Url.Action("ChangeTemplate")", { fileName: currentfileName, parentFolder: currentParentFolder, value: newValue })
+                    .done(
+                        function (data) {
+                            if (data.trim() == "1") {
+                                $('#Status').removeAttr('style').css("color", "green");
+                                $('#Status').text(currentfileName + " - Successfully saved");
+                                clearTimeout(timer);
+                                timer = window.setTimeout(clearStatus, 3000);
+
+                            }
+                            else {
+                                $('#Status').removeAttr('style').css("color", "red");
+                                $('#Status').text(currentfileName + " - Error - Can't save");
+                                clearTimeout(timer);
+                                window.setTimeout(clearStatus, 3000);
+                            }
+                        }
+                    )
+                    .fail(
+                        function () {
+                            $('#Status').removeAttr('style').css("color", "red");
+                            $('#Status').text(currentfileName + " - Error - Can't save");
+                            clearTimeout(timer);
+                            window.setTimeout(clearStatus, 3000);
+                        }
+                    );
+                }
+            }
+            );
+    </script>
+</div>

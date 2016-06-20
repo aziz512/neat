@@ -1,0 +1,25 @@
+<!--
+This is template of each article in the list on main page
+
+
+{{RootURL}} - website's root url
+{{Content}} - article content
+{{Author}} - article's author
+{{CategoryName}} - keyword of article's category (used in urls)
+{{CategoryTitle}} - title of article's category (i.e. 'World news')
+{{Id}} - id of the article
+{{Day}} - day the comment was posted (day of the month)
+{{Month}} - month the comment was posted (as a number)
+{{Year}}" - year the comment was posted in (as a number)
+{{Hour}}" - hour the comment was posted at (only number)
+{{Minutes}} - minute comment was at
+{{ArticleURL}} - full URL of this article
+-->
+
+<div>
+    <h3><a href="{{ArticleURL}}">{{Title}}</a></h3>
+    <p>Автор: {{Author}} Date: {{Day}}/{{Month}}/{{Year}} {{Hour}}:{{Minutes}} Category: {{CategoryName}}</p>
+    <p>
+        {{Content}}
+    </p>
+</div>

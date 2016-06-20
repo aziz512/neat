@@ -1,0 +1,30 @@
+<!--
+{{Username}} - usersame
+{{FirstName}}" - users' First name
+{{LastName}}", - users' Last name
+{{GroupKey}}", - users' Group keyword (i.e. admin)
+{{AvatarURL}}" - users' Profile picture URL
+{{GroupTitle}} - users' Group title (i.e. Administrator)
+{{Email}} - users' email
+{{BannedDue}} - Banned due to certain date
+
+{{Errors}} - errors while saving
+-->
+
+{{Errors}}
+<form action="/Profile/Edit" enctype="multipart/form-data" method="post">
+    <h2>Edit profile</h2>
+    <p>Username: {{Username}}</p>
+    <input value="{{Username}}" name="Username" id="Username" type="hidden" class="form-control">
+    <p>First Name: <input id="FirstName" name="FirstName" value="{{FirstName}}" class="form-control" type="text"></p>
+    <p>Last Name: <input id="LastName" name="LastName" value="{{LastName}}" type="text" class="form-control"></p>
+    <p>Email: <input data-val="true" data-val-required="Enter your email" id="Email" name="Email" value="{{Email}}" class="form-control" type="text"></p>
+    <p>Old Password: <input data-val="true" id="OldPassword" name="OldPassword" type="password" class="form-control"></p>
+    <p>New Password: <input data-val="true" id="NewPassword" name="NewPassword" type="password" class="form-control"></p>
+    <p>Avatar:</p>
+    <p>
+        <img src="{{AvatarURL}}" height="200" width="150">
+        <input accept=".jpg,.png" id="Avatar" name="Avatar" type="file">
+    </p>
+    <p><input value="Save" class="button" type="submit"></p>
+</form>

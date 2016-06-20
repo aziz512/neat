@@ -1,0 +1,131 @@
+﻿@model List<News.Models.User>
+@{
+	ViewBag.Title = "Users";
+}
+@{ 
+	var db = new News.Models.DatabaseContext();
+}
+<h2>Users</h2>
+<br />
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+        integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+        crossorigin="anonymous"></script>
+
+<script>
+    function delete_Click(id) {
+        $('#DeleteId').val(id);
+        $("#SubmitDelete").click();
+    }
+    function ban_Click(id) {
+        $('#BanId').val(id);
+        $("#SubmitBan").click();
+    }
+    function unban_Click(id) {
+        $('#UnbanId').val(id);
+        $("#SubmitUnban").click();
+    }
+</script>
+
+@using (Html.BeginForm())
+{
+    <a href="@Url.Action("AddUser","Admin")" class="button">Add user</a>
+	<input type="submit" value="Delete selected" name="DeleteUsers" formaction="@Url.Action("DeleteUsers","Admin")" class="button"/>
+	<input type="submit" value="Ban selected" name="BanUsers" formaction="@Url.Action("BanUsers","Admin")" class="button"/>
+    <input type="submit" value="Unban selected" name="UnBanUsers" formaction="@Url.Action("UnBanUsers","Admin")" class="button" />
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="text-align:center;">Check</th>
+				<th style="text-align:center;">Username</th>
+				<th style="text-align:center;">Group</th>
+				<th style="text-align:center;">Email</th>
+				<th style="text-align:center;">First Name</th>
+				<th style="text-align:center;">Last Name</th>
+				<th style="text-align:center;">Status</th>
+				<th style="text-align:center;">Banned Due</th>
+				<th style="text-align:center;">Comments</th>
+				<th style="text-align:center;">Posts</th>
+				<th style="text-align:center;">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+
+				@Html.HiddenFor(x => x[Model.IndexOf(item)].Username, new {value = item.Username});
+
+				<tr style="text-align:center;">
+					<td>@Html.CheckBoxFor(x => x[Model.IndexOf(item)].Checked)</td>
+					<td><a href="@Url.Action("Index","Profile", new {username = item.Username })">@item.Username</a></td>
+					<td>@item.Group</td>
+					<td>@item.Email</td>
+					<td>@item.FirstName</td>
+					<td>@item.LastName</td>
+					<td>
+						@if (item.IsBanned == true)
+						{
+							<span>Banned</span>
+						}
+						else
+						{
+							<span>Active</span>
+						}
+					</td>
+					<td>
+						@if (item.IsBanned == true && item.BannedDue != null)
+						{
+							<span>@item.BannedDue</span>
+						}
+						else
+						{
+							<span>Not Banned</span>
+						}
+					</td>
+
+
+					<td>
+						@if (db.Comments.Any(x => x.AuthorName == item.Username))
+						{
+							<span>@db.Comments.Where(x => x.AuthorName == item.Username).Count()</span>
+						}
+						else
+						{
+							<span>0</span>
+						}
+					</td
+	>
+					<td>
+						@if (db.Articles.Any(x => x.Author == item.Username))
+						{
+							<span>@db.Articles.Where(x => x.Author == item.Username).Count()</span>
+						}
+						else
+						{
+							<span>0</span>
+						}
+					</td>
+					<td>
+                        <a href="@Url.Action("EditUser","Admin", new { username = item.Username } )"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon" /></a>
+                        <img src="~/Content/images/trashRed.png" onclick="delete_Click('@item.Username')" class="adminpanel-action-icon"/>
+                        <img src="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678075-sign-ban-128.png" onclick="ban_Click('@item.Username')" class="adminpanel-action-icon" title="Ban" />
+                        <img src="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678134-sign-check-128.png" onclick="unban_Click('@item.Username')" class="adminpanel-action-icon" title="Unban" />
+					</td>
+
+				</tr>
+				}
+		</tbody>
+	</table>
+}
+<form action="@Url.Action("DeleteUser", "Admin")" method="post" name="DeleteForm" style="display:none">
+    <input type="text" id="DeleteId" name="username" />
+    <input type="submit" id="SubmitDelete" />
+</form>
+<form action="@Url.Action("BanUser", "Admin")" method="post" name="DeleteForm" style="display:none">
+    <input type="text" id="BanId" name="username" />
+    <input type="submit" id="SubmitBan" />
+</form>
+<form action="@Url.Action("UnBanUser", "Admin")" method="post" name="DeleteForm" style="display:none">
+    <input type="text" id="UnbanId" name="username" />
+    <input type="submit" id="SubmitUnBan" />
+</form>

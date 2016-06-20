@@ -1,0 +1,57 @@
+﻿@model List<News.Models.Setting>
+@{
+	ViewBag.Title = "MainSettings";
+}
+
+<h2>MainSettings</h2>
+@using (Html.BeginForm("MainSettings", "Admin", FormMethod.Post, new {@class="form-horizontal" }))
+{
+    if (Model != null)
+    {
+        if (ViewBag.Errors != null)
+        {
+			<p class="validation-summary">
+				@Html.Raw(News.Models.HelpingMethods.UnsortedListOfErrors(ViewBag.Errors))
+			</p>
+		}
+		foreach (var item in Model)
+		{
+			@Html.HiddenFor(x => x[Model.IndexOf(item)].Type)
+			@Html.HiddenFor(x => x[Model.IndexOf(item)].Key)
+			@Html.HiddenFor(x => x[Model.IndexOf(item)].Name)
+            if (item.Type != null && item.Type.ToLower() == "bool")
+            {
+                var options = new List<SelectListItem> { new SelectListItem() { Value = "true", Text = "Yes" }, new SelectListItem() { Value = "false", Text = "No" } };
+                if (bool.Parse(Model[Model.IndexOf(item)].Value))
+                {
+                    options.First(x => x.Value == "true").Selected = true;
+                }
+                if (!bool.Parse(Model[Model.IndexOf(item)].Value))
+                {
+                    options.First(x => x.Value == "false").Selected = true;
+                }
+                 <div class="form-group">
+                    <label for="" class="control-label col-md-2" style="text-align:left">@item.Name</label> 
+                     <div class="col-md-3">
+                         @Html.DropDownListFor(x => x[Model.IndexOf(item)].Value, options, new { @class = "form-control" })
+                     </div>
+                     
+                 </div>
+
+            }
+            else
+            {
+
+                <div class="form-group">
+                    <label for="" class="control-label col-md-2" style="text-align:left">@item.Name</label>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(x => x[Model.IndexOf(item)].Value, new { @class = "form-control"})
+                    </div>
+
+                </div>
+
+            }
+        }
+		<input type="submit" value="Save" class="button"/>
+	}
+}

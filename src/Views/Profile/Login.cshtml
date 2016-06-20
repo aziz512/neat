@@ -1,0 +1,20 @@
+﻿@model News.Models.User
+
+@{
+    ViewBag.Title = "Login";
+}
+@{
+    string template = News.Models.HelpingMethods.getTemplateValue("login");
+    string errorsHtml = "<ul>";
+    if ((ViewBag.Errors as List<string>) != null)
+    {
+        foreach (string item in ViewBag.Errors)
+        {
+            errorsHtml += "<p>" + item + "</p>";
+        }
+    }
+    errorsHtml += "</ul>";
+
+    template = template.Replace("{{Errors}}", errorsHtml);
+}
+@Html.Raw(template)

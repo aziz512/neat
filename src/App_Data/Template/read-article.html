@@ -1,0 +1,36 @@
+<!--
+{{Username}} - username
+{{FirstName}}" - users' First name
+{{LastName}}", - users' Last name
+{{GroupKey}}", - users' Group keyword (i.e. admin)
+{{AvatarURL}}" - users' Profile picture URL
+{{GroupTitle}} - users' Group title (i.e. Administrator)
+{{Email}} - users' email
+
+This is template of full article
+
+{{RootURL}} - website's root url
+{{Content}} - article content
+{{Author}} - article's author
+{{CategoryName}} - keyword of article's category (used in urls)
+{{CategoryTitle}} - title of article's category (i.e. 'World news')
+{{Id}} - id of the article
+{{Day}} - day the comment was posted (day of the month)
+{{Month}} - month the comment was posted (as a number)
+{{Year}}" - year the comment was posted in (as a number)
+{{Hour}}" - hour the comment was posted at (only number)
+{{Minutes}} - minute comment was at
+
+{{Field=fieldName}} - value of additional field (i.e. {{Field=video_url}} )
+{{Comments}} - list of comments
+{{AddComment}} - form for adding a new comment
+-->
+
+<h2>{{Title}}</h2>
+<p>Автор: {{Author}}</p>
+<p>Добавлено: {{Day}}/{{Month}}/{{Year}} {{Hour}}:{{Minutes}}</p>
+<p>{{Content}}</p>
+<p>{{Field=video_url}}</p>
+<h3>Comments</h3>
+{{Comments}}
+{{AddComment}}

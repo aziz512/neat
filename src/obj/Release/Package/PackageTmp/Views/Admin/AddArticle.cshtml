@@ -1,0 +1,131 @@
+﻿@using News.Models
+@model Article
+@{
+    ViewBag.Title = "AddArticle";
+}
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "#articleContent",
+        plugins: "charmap colorpicker emoticons hr importcss link nonbreaking paste tabfocus textcolor visualchars code image insertdatetime lists preview searchreplace table wordcount autolink bbcode codesample imagetools media spellchecker"
+    });
+
+    function CategoryChanged() {
+        var selector = document.getElementById("Category");
+        var fields = document.getElementsByClassName("additional-field");
+        for (var i = 0; i < fields.length; i++) {
+            var categories = fields[i].dataset.categories.split(',');
+            if (categories.indexOf(selector.value,0) == -1) {
+                fields[i].style.display = "none";
+            }
+            else {
+                fields[i].style.display = "block";
+            }
+        }
+    }
+</script>
+
+@using (Html.BeginForm())
+{
+
+    <h2>Add article</h2>
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Author, "Author", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Author, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, "Date", htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left;padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.TextAreaFor(x => x.Content, new { id = "articleContent", Value = Model.Content })
+                @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Category, htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left; padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(x => x.Category, (IEnumerable<SelectListItem>)ViewBag.Categories, new { onchange = "CategoryChanged()", id = "Category", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @for (int i = 0; i < Model.AdditionalFields.Count; i++)
+        {
+            @Html.HiddenFor(x => x.AdditionalFields[i].Title);
+            @Html.HiddenFor(x => x.AdditionalFields[i].Name);
+            @Html.HiddenFor(x => x.AdditionalFields[i].Categories);
+            @Html.HiddenFor(x => x.AdditionalFields[i].Type);
+            @Html.HiddenFor(x => x.AdditionalFields[i].DefaultValue);
+            <div class="additional-field form-group" data-categories="@Model.AdditionalFields[i].Categories" style="display:none;">
+                @Html.LabelFor(x => x.AdditionalFields[i].Value,Model.AdditionalFields[i].Title, htmlAttributes: new { @class = "col-md-2", style = "text-align:left;padding-top:7px;" })
+                @if (Model.AdditionalFields[i].Type == "textbox")
+                {
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(x => x.AdditionalFields[i].Value, new { @class = "form-control" })
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-3">
+                        @Html.TextAreaFor(x => x.AdditionalFields[i].Value, new { @class = "form-control" })
+                    </div>
+                }
+            </div>
+        }
+        <script>CategoryChanged();</script>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Moderated, htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left; padding-top:7px;" })
+            <div class="col-md-3">
+                @Html.CheckBoxFor(x => x.Moderated, new { style = "margin-top:10px;" })
+                @Html.ValidationMessageFor(model => model.Moderated, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="~/Scripts/DateTimePicker/jquery.datetimepicker.css" />
+    <script src="~/Scripts/DateTimePicker/jquery.js"></script>
+    <script src="~/Scripts/DateTimePicker/build/jquery.datetimepicker.full.min.js"></script>
+    <script>
+        $("#Date").datetimepicker({
+            format: 'm/d/Y H:i',
+            lang: 'us'
+        });
+    </script>
+}

@@ -1,0 +1,75 @@
+﻿@model List<News.Models.Group>
+@{
+    ViewBag.Title = "AllGroups";
+}
+@{ 
+    var db = new News.Models.DatabaseContext();
+}
+<h2>All Groups</h2>
+<style>
+
+</style>
+<br />
+<a href="@Url.Action("AddGroup","Admin")" class="button">Add group</a>
+<br />
+@if (Model != null)
+{
+    <table cellpadding="10" style="text-align:center">
+        <thead style="border-bottom: 1px black solid;">
+            <tr>
+                <th style="text-align:center">Keyword</th>
+                <th style="text-align:center">Title</th>
+                <th style="text-align:center">Can edit categories</th>
+                <th style="text-align:center">Can edit template</th>
+                <th style="text-align:center">Can edit news</th>
+                <th style="text-align:center">Can edit groups</th>
+                <th style="text-align:center">Can edit users</th>
+                <th style="text-align:center">Can edit comments</th>
+                <th style="text-align:center">Can post with no moderation</th>
+                <th style="text-align:center">Can upload images</th>
+                <th style="text-align:center">Can use special tags(img, a) in comments</th>
+                <th style="text-align:center">Can use special tags(img, a) in news</th>
+                <th style="text-align:center">Users in this group</th>                
+                <th style="text-align:center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Title</td>
+                    <td>@item.CanEditCategories</td>
+                    <td>@item.CanEditTemplate</td>
+                    <td>@item.CanEditNews</td>
+                    <td>@item.CanEditGroups</td>
+                    <td>@item.CanEditUsers</td>
+                    <td>@item.CanEditComments</td>
+                    <td>@item.CanPostWithNoModeration</td>
+                    <td>@item.CanUploadImages</td>
+                    <td>@item.CanUseSpecialTagsInComments</td>
+                    <td>@item.CanUseSpecialTagsInNews</td>
+                    <td>
+                        @if (db.Users.Any(x => x.Group == item.Name))
+                        {
+                            <span>@db.Users.Where(x => x.Group == item.Name).Count()</span>
+                        }
+                        else
+                        {
+                            <span>0</span>
+                        }
+                    </td>
+                    <td style="width:120px;">
+                        <a href="@Url.Action("EditGroup","Admin", new { name = item.Name } )"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon" /></a>
+                        @using (Html.BeginForm("DeleteGroup", "Admin", new { name = item.Name }, FormMethod.Post, new { style = "display:inline-block;"}))
+                        {
+                            <input type="image" src="~/Content/images/trashRed.png" class="adminpanel-action-icon" />
+                        }                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+

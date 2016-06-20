@@ -1,0 +1,24 @@
+﻿@model News.Models.User
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+@using (Html.BeginForm())
+{
+       <div style="color:red;">
+        @Html.ValidationSummary()
+        @if ((ViewBag.Errors as List<string>) != null)
+        {
+            foreach (string item in ViewBag.Errors)
+            {
+                <p>@item</p>
+            }
+        }
+        </div>
+        <p>Username: @Html.TextBoxFor(x => x.Username)</p>
+        <p>Password: @Html.PasswordFor(x => x.Password)</p>
+        <input type="submit" value="Sign in" />
+}
+

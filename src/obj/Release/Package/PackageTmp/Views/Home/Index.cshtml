@@ -1,0 +1,55 @@
+﻿@using News.Models
+@model List<Article>
+@{
+    ViewBag.Title = "Home Page";
+    var authenticator = new Authenticator();
+}
+
+@if (Model != null)
+{
+    var categories = (List<Category>)ViewBag.Categories;
+
+
+    string template = HelpingMethods.getTemplateValue("news");
+    foreach (Article item in Model)
+    {
+        string news = template.Replace("{{Title}}", item.Title);
+        news = news.Replace("{{Author}}", item.Author);
+        news = news.Replace("{{Id}}", item.Id.ToString());
+        news = news.Replace("{{Content}}", item.Content);
+        news = news.Replace("{{ArticleURL}}", HelpingMethods.RootURL +  Url.Action("Read", "Home", new { id = item.Id }));
+        news = news.Replace("{{Date}}", item.Date.ToString());
+        news = news.Replace("{{CategoryKey}}", item.Category);
+        news = news.Replace("{{CategoryName}}", authenticator.ReturnCategoryName(item.Category));
+        news = news.Replace("{{Day}}", item.Date.Day.ToString());
+        news = news.Replace("{{Month}}", item.Date.Month.ToString());
+        news = news.Replace("{{Year}}", item.Date.Year.ToString());
+        news = news.Replace("{{Hour}}", item.Date.Hour.ToString());
+        news = news.Replace("{{Minutes}}", item.Date.Minute.ToString());
+        if ((ViewBag.User as User) != null)
+        {
+            var user = (ViewBag.User as User);
+            news = news.Replace("{{Username}}", user.Username);
+            news = news.Replace("{{FirstName}}", user.FirstName);
+            news = news.Replace("{{LastName}}", user.LastName);
+            news = news.Replace("{{GroupKey}}", user.Group);
+            news = news.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(user.Username, Authenticator.AvatarURLType.Absolute));
+            news = news.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(user.Group));
+        }
+
+        @:@Html.Raw(news)
+    }
+}
+else
+{
+    <p>No articles</p>
+}
+@if (ViewBag.CurrentPage != null && int.Parse(ViewBag.LastPage.ToString()) != 1 && ViewBag.LastPage != null)
+{
+    <br />
+    <a href="@Url.Action("Index", "Home", new { page = 1 })" class="button"><<</a>
+    <a href="@Url.Action("Index", "Home", new { page = (int)ViewBag.CurrentPage - 1})" class="button"><</a>
+    <span class="button">Page @((int)ViewBag.CurrentPage) of @((int)ViewBag.LastPage)</span>
+    <a href="@Url.Action("Index","Home", new {page = (int)ViewBag.CurrentPage + 1})" class="button"> > </a>
+    <a href="@Url.Action("Index","Home", new {page = (int)ViewBag.LastPage})" class="button">>></a>
+}

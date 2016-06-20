@@ -1,0 +1,87 @@
+﻿@model List<News.Models.Comment>
+@{
+    ViewBag.Title = "Comments";
+}
+
+
+<script>
+    function checkAll() {
+        var mainCheckbox = document.getElementById("check-all");
+        var checkboxes = document.getElementsByClassName("checkbox");
+        if (mainCheckbox.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+        else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+        }
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+        integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+        crossorigin="anonymous"></script>
+
+<script>
+    function delete_Click(id) {
+        $('#DeleteId').val(id);
+        $("#SubmitDelete").click();
+    }
+</script>
+<h2>Comments</h2>
+
+<br />
+@using (Html.BeginForm())
+{
+    <input type="submit" value="Delete selected" class="button"/>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="check-all" onchange="checkAll()" /></th>
+                <th>Author</th>
+                <th>Content</th>
+                <th>Date</th>
+                <th>Post</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(x => x[i].Id)
+                        <td>@Html.CheckBoxFor(x => x[i].Checked, new { @class = "checkbox" })</td>
+                        <td>@Model[i].AuthorName</td>
+                        
+                        
+                        @if (Model[i].Content.Length < 15)
+                        {
+                            <td>@Model[i].Content</td>
+                        }
+                        else
+                        {
+                            <td>@Model[i].Content.Substring(0, 15)<span>...</span></td>
+                        }
+                        <td>@Model[i].Date</td>
+                        <td>
+                            <a href="@Url.Action("Read", "Home", new { id = Model[i].NewsId })">Go to post</a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("EditComment","Admin", new { id = Model[i].Id} )"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon" /></a>
+                            <input type="image" src="~/Content/images/trashRed.png" onclick="delete_Click('@Model[i].Id')" title="Delete" class="adminpanel-action-icon" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+<form action="@Url.Action("DeleteComment", "Admin")" method="post" name="DeleteForm" style="display:none">
+    <input type="text" id="DeleteId" name="id" />
+    <input type="submit" id="SubmitDelete" />
+</form>

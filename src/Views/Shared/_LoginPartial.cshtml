@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNet.Identity
+@using News.Models
+@using System.Text.RegularExpressions
+
+@if ((ViewBag.User as News.Models.User) != null)
+{
+    var user = ViewBag.User as News.Models.User;
+    var authenticator = new Authenticator();
+    var template = HelpingMethods.getTemplateValue("login-small");
+    template = Regex.Replace(Regex.Match(template, @"<logged>.*?<\/logged>", RegexOptions.Singleline).Value, @"<logged>|</logged>","");
+    template = template.Replace("{{Username}}", user.Username);
+    template = template.Replace("{{FirstName}}", user.FirstName);
+    template = template.Replace("{{LastName}}", user.LastName);
+    template = template.Replace("{{GroupKey}}", user.Group);
+    template = template.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(user.Username, Authenticator.AvatarURLType.Relative));
+    template = template.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(user.Group));
+    template = template.Replace("{{Email}}", user.Email);
+
+    @Html.Raw(template)
+}
+else
+{
+    var template = HelpingMethods.getTemplateValue("login-small");
+    template = Regex.Replace(Regex.Match(template, @"<unlogged>.*?<\/unlogged>", RegexOptions.Singleline).Value, @"<unlogged>|</unlogged>", "");
+    
+    @Html.Raw(template)
+}

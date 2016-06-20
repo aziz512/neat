@@ -1,0 +1,47 @@
+﻿@using News.Models
+@model List<News.Models.Article>
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+@if (Model != null)
+{
+    var categories = (List<Category>)ViewBag.Categories;
+    Func<string, string> returnCategoryName = x =>
+    {
+        if (!String.IsNullOrWhiteSpace(x))
+        {
+            if (categories.Any(y => y.Keyword == x))
+            {
+                return categories.First(y => y.Keyword == x).Title;
+            }
+        }
+        return "";
+    };
+    string template = HelpingMethods.getTemplateValue("news");
+    foreach (Article item in Model)
+    {
+        string news = template.Replace("{{Title}}", item.Title);
+        news = news.Replace("{{Author}}", item.Author);
+        news = news.Replace("{{Content}}", item.Content);
+        news = news.Replace("{{ArticleURL}}", Url.Action("Read", "Home", new { id = item.Id }));
+        news = news.Replace("{{Date}}", item.Date.Day + "/" + item.Date.Month + "/" + item.Date.Year);
+        news = news.Replace("{{CategoryKey}}", item.Category);
+        news = news.Replace("{{CategoryName}}", returnCategoryName(item.Category));
+        @:@Html.Raw(news)
+    }
+}
+else
+{
+    <p>No articles</p>
+}
+@if (ViewBag.CurrentPage != null && int.Parse(ViewBag.LastPage.ToString()) != 1 && ViewBag.LastPage != null)
+{
+    <br />
+    <a href="@Url.Action("Search", "Home", new { page = 1, query = ViewBag.UserQuery.ToString()})" class="button"><<</a>
+    <a href="@Url.Action("Search", "Home", new { page = (int)ViewBag.CurrentPage - 1, query = ViewBag.UserQuery.ToString()})" class="button"><</a>
+    <span class="button">Page @((int)ViewBag.CurrentPage) of @((int)ViewBag.LastPage)</span>
+    <a href="@Url.Action("Search","Home", new {page = (int)ViewBag.CurrentPage + 1, query = ViewBag.UserQuery.ToString()})" class="button"> > </a>
+    <a href="@Url.Action("Search","Home", new {page = (int)ViewBag.LastPage, query = ViewBag.UserQuery.ToString()})" class="button">>></a>
+}

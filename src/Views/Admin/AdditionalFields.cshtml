@@ -1,0 +1,85 @@
+﻿@model List<News.Models.AdditionalField>
+@{
+	ViewBag.Title = "AdditionalFields";
+}
+
+<h2>AdditionalFields</h2>
+
+<script>
+    function checkAll() {
+        if (document.getElementById('check-all').checked) {
+            var checkboxes = document.getElementsByClassName("field-checkbox");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+        else {
+            var checkboxes = document.getElementsByClassName("field-checkbox");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+        }
+    }
+</script>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+<script>
+    function delete_Click(id) {
+        $('#DeleteId').val(id);
+
+        $("#SubmitDelete").click();
+    }
+</script>
+
+@using (Html.BeginForm("DeleteFields", "Admin"))
+{
+    <a class="button" href="@Url.Action("AddAdditionalField","Admin")">Add new</a>
+    <input  type="submit" class="button" value="Delete selected"/>
+    if (Model != null && Model.Count > 0)
+    {
+		<table class="table">
+			<thead>
+				<tr>
+                    <th><input type="checkbox" id="check-all" onchange="checkAll()" /></th>
+					<th>Name</th>
+					<th>Title</th>
+					<th>Categories</th>
+					<th>Type</th>
+					<th>Default Value</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(x => x[i].Name)
+                        <td>@Html.CheckBoxFor(x => x[i].Checked, new { @class = "field-checkbox" })</td>
+                        <td>@Model[i].Name</td>
+
+                        <td>@Model[i].Title</td>
+                        <td>@Model[i].Categories</td>
+                        <td>@Model[i].Type</td>
+                        @if (Model[i].DefaultValue != null)
+                        {
+                            <td>@Model[i].DefaultValue</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
+                        <td>
+                            <a href="@Url.Action("EditAdditionalField","Admin", new { name = Model[i].Name.Trim() })"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon" /></a>
+                            <img src="~/Content/images/trashRed.png" title="Delete" class="adminpanel-action-icon" onclick="delete_Click('@Model[i].Name.Trim() ')"/>
+                        </td>
+                    </tr>
+                }
+					
+			</tbody>
+		</table>
+	}
+}
+<form action="@Url.Action("DeleteAdditionalField", "Admin")" method="post" style="display:none">
+    <input type="text" id="DeleteId" name="name" />
+    <input type="submit" id="SubmitDelete" />
+</form>
