@@ -585,7 +585,7 @@ namespace News.Controllers
 
         public ActionResult Search(string query, int? page)
         {
-            if (query != null)
+            if (!String.IsNullOrWhiteSpace(query))
             {
                 if (db.Articles.Any())
                 {
@@ -609,26 +609,16 @@ namespace News.Controllers
                             }
                         }
                     }
-                    if (!page.HasValue)
+                    if (!page.HasValue || page.Value <= 0)
                     {
                         page = 1;
                     }
 
-                    int test;
                     int itemsPerPage = 5;
                     string newsPerPage = HelpingMethods.getSettingValue("newsperpage");
-                    if (int.TryParse(newsPerPage, out test))
-                    {
-                        itemsPerPage = int.Parse(newsPerPage);
-                    }
-                    else
+                    if (!int.TryParse(newsPerPage, out itemsPerPage))
                     {
                         itemsPerPage = 5;
-                    }
-
-                    if (page.Value <= 0)
-                    {
-                        page = 1;
                     }
 
                     ViewBag.CurrentPage = page.Value;
@@ -638,31 +628,38 @@ namespace News.Controllers
                     var categories = db.Categories.ToList();
                     ViewBag.Categories = categories;
 
-                    if (articlesToShow.Count >= itemsPerPage * (page))
+                    if (articlesToShow.Count != 0)
                     {
-                        return View(articlesToShow.GetRange((page.Value - 1) * itemsPerPage, itemsPerPage)); //returning View with articles
+                        if (articlesToShow.Count >= itemsPerPage * (page))
+                        {
+                            return View(articlesToShow.GetRange((page.Value - 1) * itemsPerPage, itemsPerPage)); //returning View with articles
+                        }
+                        else
+                        {
+                            bool validPageNum = false;
+                            if (articlesToShow.Count <= itemsPerPage * (page - 1)) //checks if we don't have enough articles to show on this page (page of search results) 
+                            {
+                                while (!validPageNum)
+                                {
+                                    page--;
+                                    if (articlesToShow.Count >= itemsPerPage * (page - 1))
+                                    {
+                                        validPageNum = true;
+                                        return RedirectToAction("Search", "Home", new { page = page, query = userQuery });
+                                    }
+                                }
+                            }
+
+                            if (articlesToShow.Count > itemsPerPage * (page - 1) && articlesToShow.Count < itemsPerPage * (page))
+                            {
+                                return View(articlesToShow.GetRange((page.Value - 1) * itemsPerPage, articlesToShow.Count - (page.Value - 1) * itemsPerPage)); //returning View with articles
+                            }
+                            return RedirectToAction("Search", "Home");
+                        }
                     }
                     else
                     {
-                        bool validPageNum = false;
-                        if (articlesToShow.Count <= itemsPerPage * (page - 1))
-                        {
-                            while (!validPageNum)
-                            {
-                                page--;
-                                if (articlesToShow.Count >= itemsPerPage * (page - 1))
-                                {
-                                    validPageNum = true;
-                                    return RedirectToAction("Search", "Home", new { page = page, query = userQuery });
-                                }
-                            }
-                        }
-
-                        if (articlesToShow.Count > itemsPerPage * (page - 1) && articlesToShow.Count < itemsPerPage * (page))
-                        {
-                            return View(articlesToShow.GetRange((page.Value - 1) * itemsPerPage, articlesToShow.Count - (page.Value - 1) * itemsPerPage)); //returning View with articles
-                        }
-                        return RedirectToAction("Search", "Home");
+                        return View();
                     }
                 }
             }
