@@ -1,4 +1,4 @@
-# neat
+# Neat CMS
 This is Neat CMS - Content Management System built on ASP.NET MVC.
 
 Libraries used:
