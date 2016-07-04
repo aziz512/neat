@@ -1,1 +1,0 @@
-[{"Name":"Site title(in <title> tag)","Key":"title","Value":"My Website"},{"Name":"Articles per page","Key":"newsperpage","Value":"8"},{"Name":"Description of your website)","Key":"metadesc","Value":"Description of your website"},{"Name":"Keywords","Key":"metakeywords","Value":"Keywords of your website"},{"Name":"Turn your site On or Off.","Key":"sitestatus","Value":"on"}]
