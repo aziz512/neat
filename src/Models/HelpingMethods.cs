@@ -115,5 +115,7 @@ namespace News.Models
                 return HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + System.Web.Hosting.HostingEnvironment.MapPath("~/").Replace(HttpContext.Current.Request.ServerVariables["APPL_PHYSICAL_PATH"], String.Empty);
             }
         }
+
+
     }
 }

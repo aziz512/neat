@@ -227,7 +227,7 @@ namespace News.Controllers
                         {
                             //UserName = "aziztestshit@gmail.com",  // replace with valid value
                             //Password = "1234567890ABCD"  // replace with valid value
-                            UserName = HelpingMethods.getSettingValue("email"),
+                            UserName = HelpingMethods.getSettingValue("email-username"),
                             Password = HelpingMethods.getSettingValue("emailpassword")
                         };
                         smtp.Credentials = credential;

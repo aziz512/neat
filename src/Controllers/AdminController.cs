@@ -5,7 +5,6 @@
  */
 
 using Microsoft.Security.Application;
-using News.Content;
 using News.Models;
 using Newtonsoft.Json;
 using System;
@@ -14,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace News.Controllers
@@ -214,9 +214,7 @@ namespace News.Controllers
                 ViewBag.PageTitle = "Add an article";
                 if (user != null && db.Groups.Any(x => x.Name == user.Group) && db.Groups.Single(x => x.Name == user.Group).CanAddNews)
                 {
-
-
-                    var cats = AdditionalMethods.getCats();
+                    var cats = authenticator.GetCategories();
                     IEnumerable<SelectListItem> list;
                     list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
                     ViewBag.Categories = list;
@@ -243,17 +241,25 @@ namespace News.Controllers
                 if (user != null && db.Groups.Any(x => x.Name == user.Group) && db.Groups.Single(x => x.Name == user.Group).CanAddNews)
                 {
 
-                    var cats = AdditionalMethods.getCats();
+                    var cats = authenticator.GetCategories();
                     IEnumerable<SelectListItem> list;
                     list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
                     ViewBag.Categories = list;
                     if (ModelState.IsValid)
                     {
+                        article.Title = HttpUtility.HtmlEncode(article.Title);
+                        article.Content = Sanitizer.GetSafeHtmlFragment(article.Content);
+
                         if (!db.Groups.Where(x => x.Name == user.Group).First().CanPostWithNoModeration)
                         {
                             article.Moderated = false;
                         }
-                        article.Content = Sanitizer.GetSafeHtmlFragment(article.Content);
+                        if (!db.Users.Any(x => x.Username == article.Author.Trim()))
+                        {
+                            ModelState.AddModelError("Author", "This author doesn't exist");
+                            return View(article);
+                        }
+
                         if (db.Groups.Any(x => x.Name == user.Group) && !db.Groups.First(x => x.Name == user.Group).CanUseSpecialTagsInNews)
                         {
                             article.Content = Regex.Replace(article.Content, "<(()|( )+|(\t)+)img(?<name>.*?)>", "&lt;img${name}&gt;");
@@ -591,7 +597,7 @@ namespace News.Controllers
                                     }
                                 }
                             }
-                            var cats = AdditionalMethods.getCats();
+                            var cats = authenticator.GetCategories();
                             IEnumerable<SelectListItem> list;
                             list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
                             ViewBag.Categories = list;
@@ -623,53 +629,69 @@ namespace News.Controllers
                 ViewBag.PageTitle = "Edit an article";
                 if (authenticator.HasPermission(user, Authenticator.Permissions.EditNews))
                 {
-
                     if (ModelState.IsValid)
                     {
+                        article.Content = Sanitizer.GetSafeHtmlFragment(article.Content);
+                        article.Title = HttpUtility.HtmlEncode(article.Title);
+
+
+
                         if (!db.Groups.Where(x => x.Name == user.Group).First().CanPostWithNoModeration)
                         {
                             article.Moderated = false;
                         }
 
-                        List<AdditionalField> Fields = null;
-                        if (article.AdditionalFields.Any(x => x.Categories.Split(',').Any(y => y == article.Category)))
+                        if (!db.Users.Any(x => x.Username == article.Author.Trim()))
                         {
-                            Fields = article.AdditionalFields.Where(x => x.Categories.Split(',').Any(y => y == article.Category)).ToList();
+                            ModelState.AddModelError("Author", "This author doesn't exist");
+                            var cats = authenticator.GetCategories();
+                            IEnumerable<SelectListItem> list;
+                            list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
+                            ViewBag.Categories = list;
+                            return View(article);
                         }
-                        if (Fields != null && Fields.Count > 0)
+
+                        if (article.AdditionalFields != null)
                         {
-                            foreach (var item in Fields)
+                            List<AdditionalField> Fields = null;
+                            if (article.AdditionalFields.Any(x => x.Categories.Split(',').Any(y => y == article.Category)))
                             {
-                                if (db.FieldValues.Any(x => x.ArticleId == article.Id && x.FieldName == item.Name))
+                                Fields = article.AdditionalFields.Where(x => x.Categories.Split(',').Any(y => y == article.Category)).ToList();
+                            }
+                            if (Fields != null && Fields.Count > 0)
+                            {
+                                foreach (var item in Fields)
                                 {
-                                    if (item.Value == null)
+                                    if (db.FieldValues.Any(x => x.ArticleId == article.Id && x.FieldName == item.Name))
                                     {
-                                        db.FieldValues.Remove(db.FieldValues.Single(x => x.ArticleId == article.Id && x.FieldName == item.Name));
+                                        if (item.Value == null)
+                                        {
+                                            db.FieldValues.Remove(db.FieldValues.Single(x => x.ArticleId == article.Id && x.FieldName == item.Name));
+                                        }
+                                        else
+                                        {
+                                            FieldValue value = new FieldValue();
+                                            value.FieldName = item.Name;
+                                            value.ArticleId = article.Id;
+                                            value.Value = item.Value;
+                                            db.FieldValues.Remove(db.FieldValues.Single(x => x.ArticleId == article.Id && x.FieldName == item.Name));
+                                            db.FieldValues.Add(value);
+                                        }
                                     }
                                     else
                                     {
-                                        FieldValue value = new FieldValue();
-                                        value.FieldName = item.Name;
-                                        value.ArticleId = article.Id;
-                                        value.Value = item.Value;
-                                        db.FieldValues.Remove(db.FieldValues.Single(x => x.ArticleId == article.Id && x.FieldName == item.Name));
-                                        db.FieldValues.Add(value);
-                                    }
-                                }
-                                else
-                                {
-                                    if (item.Value != null)
-                                    {
-                                        FieldValue value = new FieldValue();
-                                        value.FieldName = item.Name;
-                                        value.ArticleId = article.Id;
-                                        value.Value = item.Value;
-                                        db.FieldValues.Add(value);
+                                        if (item.Value != null)
+                                        {
+                                            FieldValue value = new FieldValue();
+                                            value.FieldName = item.Name;
+                                            value.ArticleId = article.Id;
+                                            value.Value = item.Value;
+                                            db.FieldValues.Add(value);
+                                        }
                                     }
                                 }
                             }
                         }
-                        article.Content = Sanitizer.GetSafeHtmlFragment(article.Content);
                         if (db.Groups.Any(x => x.Name == user.Group) && !db.Groups.First(x => x.Name == user.Group).CanUseSpecialTagsInNews)
                         {
                             article.Content = Regex.Replace(article.Content, "<(()|( )+|(\t)+)img(?<name>.*?)>", "&lt;img${name}&gt;");
@@ -684,11 +706,11 @@ namespace News.Controllers
                         db.Articles.First(x => x.Id == article.Id).Moderated = article.Moderated;
                         db.Articles.First(x => x.Id == article.Id).Title = article.Title;
                         db.SaveChanges();
-                        return RedirectToAction("AllArticle", "Admin");
+                        return RedirectToAction("AllArticles", "Admin");
                     }
                     else
                     {
-                        var cats = AdditionalMethods.getCats();
+                        var cats = authenticator.GetCategories();
                         IEnumerable<SelectListItem> list;
                         list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
                         ViewBag.Categories = list;
@@ -1475,7 +1497,6 @@ namespace News.Controllers
                     {
                         DeleteComments(id.ToString());
                     }
-                    return RedirectToAction("Comments", "Admin");
                 }
                 return RedirectToAction("Comments", "Admin");
             }

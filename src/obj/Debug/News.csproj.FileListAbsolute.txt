@@ -64,7 +64,6 @@ c:\users\aziz\documents\visual studio 2015\Projects\News\News\bin\Microsoft.Owin
 c:\users\aziz\documents\visual studio 2015\Projects\News\News\bin\Microsoft.Owin.Security.Google.xml
 c:\users\aziz\documents\visual studio 2015\Projects\News\News\bin\Microsoft.Owin.Security.Twitter.xml
 c:\users\aziz\documents\visual studio 2015\Projects\News\News\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-c:\users\aziz\documents\visual studio 2015\Projects\News\News\obj\Debug\News.csprojResolveAssemblyReference.cache
 c:\users\aziz\documents\visual studio 2015\Projects\News\News\obj\Debug\News.dll
 c:\users\aziz\documents\visual studio 2015\Projects\News\News\obj\Debug\News.pdb
 C:\Users\Aziz\Documents\Visual Studio 2015\Projects\News\News\bin\AntiXssLibrary.dll
@@ -89,3 +88,4 @@ C:\Users\Aziz\Documents\Visual Studio 2015\Projects\News\News\bin\Castle.Core.dl
 C:\Users\Aziz\Documents\Visual Studio 2015\Projects\News\News\bin\Moq.dll
 C:\Users\Aziz\Documents\Visual Studio 2015\Projects\News\News\bin\Castle.Core.xml
 C:\Users\Aziz\Documents\Visual Studio 2015\Projects\News\News\bin\Moq.xml
+C:\Users\Aziz\Documents\Visual Studio 2015\Projects\News\News\obj\Debug\News.csprojResolveAssemblyReference.cache

@@ -5,7 +5,6 @@
  */
 
 using Microsoft.Security.Application;
-using News.Content;
 using News.Models;
 using System;
 using System.Collections.Generic;
@@ -701,7 +700,7 @@ namespace News.Controllers
 
         public ActionResult AddArticle()
         {
-            var cats = AdditionalMethods.getCats();
+            var cats = authenticator.GetCategories();
             IEnumerable<SelectListItem> list;
             list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
             ViewBag.Categories = list;
@@ -718,13 +717,15 @@ namespace News.Controllers
 
             if (user != null && db.Groups.Any(x => x.Name == user.Group) && db.Groups.First(x => x.Name == user.Group).CanAddNews)
             {
-                var cats = AdditionalMethods.getCats();
+                var cats = authenticator.GetCategories();
                 IEnumerable<SelectListItem> list;
                 list = from cat in cats select new SelectListItem() { Text = cat.Text, Value = cat.Value };
                 ViewBag.Categories = list;
 
                 if (ModelState.IsValid)
                 {
+                    article.Title = HttpUtility.HtmlEncode(article.Title);
+                    article.Content = Sanitizer.GetSafeHtmlFragment(article.Content);
                     var fullArticle = new Article();
                     fullArticle.Author = user.Username;
                     fullArticle.Date = DateTime.Now;

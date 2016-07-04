@@ -28,7 +28,7 @@
 <script>
     function delete_Click(id) {
         $('#DeleteId').val(id);
-        $("#SubmitDelete").click();
+        $('#SubmitDelete').click();
     }
 </script>
 <h2>Comments</h2>
@@ -73,7 +73,7 @@
                         </td>
                         <td>
                             <a href="@Url.Action("EditComment","Admin", new { id = Model[i].Id} )"><img src="https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/128x128/Pencil3.png" class="adminpanel-action-icon" /></a>
-                            <input type="image" src="~/Content/images/trashRed.png" onclick="delete_Click('@Model[i].Id')" title="Delete" class="adminpanel-action-icon" />
+                            <img src="~/Content/images/trashRed.png" onclick="delete_Click('@Model[i].Id')" title="Delete" class="adminpanel-action-icon" />
                         </td>
                     </tr>
                 }
@@ -81,7 +81,11 @@
         </tbody>
     </table>
 }
-<form action="@Url.Action("DeleteComment", "Admin")" method="post" name="DeleteForm" style="display:none">
-    <input type="text" id="DeleteId" name="id" />
+
+
+
+@using (Html.BeginForm("DeleteComment", "Admin", FormMethod.Post, new { style = "display:none" }))
+{
+    <input type="number" id="DeleteId" name="id"/>
     <input type="submit" id="SubmitDelete" />
-</form>
+}

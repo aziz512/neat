@@ -1,10 +1,11 @@
 ﻿@model News.Models.Article
 
 
-<script src="http://tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
     tinymce.init({
-        selector: "#articleContent"
+        selector: "#articleContent",
+        plugins: "charmap colorpicker emoticons hr importcss link nonbreaking paste tabfocus textcolor visualchars code image insertdatetime lists preview searchreplace table wordcount autolink bbcode codesample imagetools media spellchecker"
     });
 
     function CategoryChanged() {
@@ -65,31 +66,33 @@
                 @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
             </div>
         </div>
-        @for (int i = 0; i < Model.AdditionalFields.Count; i++)
+        @if (Model.AdditionalFields != null)
         {
-            @Html.HiddenFor(x => x.AdditionalFields[i].Title);
-            @Html.HiddenFor(x => x.AdditionalFields[i].Name);
-            @Html.HiddenFor(x => x.AdditionalFields[i].Categories);
-            @Html.HiddenFor(x => x.AdditionalFields[i].Type);
-            @Html.HiddenFor(x => x.AdditionalFields[i].DefaultValue);
-            <div class="additional-field form-group" data-categories="@Model.AdditionalFields[i].Categories" style="display:none;">
-                @Html.LabelFor(x => x.AdditionalFields[i].Value, Model.AdditionalFields[i].Title, htmlAttributes: new { @class = "col-md-2", style = "text-align:left;padding-top:7px;" })
-                @if (Model.AdditionalFields[i].Type == "textbox")
-                {
-                    <div class="col-md-3">
-                        @Html.TextBoxFor(x => x.AdditionalFields[i].Value, new { @class = "form-control" })
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-3">
-                        @Html.TextAreaFor(x => x.AdditionalFields[i].Value, new { @class = "form-control" })
-                    </div>
-                }
-            </div>
+            for (int i = 0; i < Model.AdditionalFields.Count; i++)
+            {
+                @Html.HiddenFor(x => x.AdditionalFields[i].Title);
+                @Html.HiddenFor(x => x.AdditionalFields[i].Name);
+                @Html.HiddenFor(x => x.AdditionalFields[i].Categories);
+                @Html.HiddenFor(x => x.AdditionalFields[i].Type);
+                @Html.HiddenFor(x => x.AdditionalFields[i].DefaultValue);
+                <div class="additional-field form-group" data-categories="@Model.AdditionalFields[i].Categories" style="display:none;">
+                    @Html.LabelFor(x => x.AdditionalFields[i].Value, Model.AdditionalFields[i].Title, htmlAttributes: new { @class = "col-md-2", style = "text-align:left;padding-top:7px;" })
+                    @if (Model.AdditionalFields[i].Type == "textbox")
+                    {
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(x => x.AdditionalFields[i].Value, new { @class = "form-control" })
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            @Html.TextAreaFor(x => x.AdditionalFields[i].Value, new { @class = "form-control" })
+                        </div>
+                    }
+                </div>
+            }
+            <script>CategoryChanged();</script>
         }
-        <script>CategoryChanged();</script>
-
 
         <div class="form-group">
             @Html.LabelFor(model => model.Moderated, htmlAttributes: new { @class = "col-md-2 control-label", style = "text-align:left; padding-top:7px;" })

@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
+using System.Web.Mvc;
 
 namespace News.Models
 {
@@ -24,6 +25,20 @@ namespace News.Models
         public Authenticator(DatabaseContext context)
         {
             db = context;
+        }
+
+
+        public IEnumerable<SelectListItem> GetCategories()
+        {
+            List<SelectListItem> cats = new List<SelectListItem>();
+            if (db.Categories.Count() != 0)
+            {
+                foreach (var item in db.Categories)
+                {
+                    cats.Add(new SelectListItem { Text = item.Title, Value = item.Keyword });
+                }
+            }
+            return cats;
         }
 
         //returns group's title by keyword

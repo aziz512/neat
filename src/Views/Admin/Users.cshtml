@@ -10,7 +10,6 @@
 <script src="https://code.jquery.com/jquery-2.2.3.min.js"
         integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
         crossorigin="anonymous"></script>
-
 <script>
     function delete_Click(id) {
         $('#DeleteId').val(id);
@@ -20,11 +19,12 @@
         $('#BanId').val(id);
         $("#SubmitBan").click();
     }
-    function unban_Click(id) {
-        $('#UnbanId').val(id);
-        $("#SubmitUnban").click();
+    function unban_Click(username) {
+        $('#UnbanId').val(username);
+        $('#SubmitUnBan').click();
     }
 </script>
+
 
 @using (Html.BeginForm())
 {
@@ -117,15 +117,16 @@
 		</tbody>
 	</table>
 }
+
 <form action="@Url.Action("DeleteUser", "Admin")" method="post" name="DeleteForm" style="display:none">
     <input type="text" id="DeleteId" name="username" />
     <input type="submit" id="SubmitDelete" />
 </form>
-<form action="@Url.Action("BanUser", "Admin")" method="post" name="DeleteForm" style="display:none">
+<form action="@Url.Action("BanUser", "Admin")" method="post" style="display:none">
     <input type="text" id="BanId" name="username" />
     <input type="submit" id="SubmitBan" />
 </form>
-<form action="@Url.Action("UnBanUser", "Admin")" method="post" name="DeleteForm" style="display:none">
+<form action="@Url.Action("UnBanUser", "Admin")" method="post" style="display:none">
     <input type="text" id="UnbanId" name="username" />
     <input type="submit" id="SubmitUnBan" />
 </form>

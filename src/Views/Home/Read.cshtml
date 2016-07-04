@@ -90,7 +90,7 @@
         commentForm = commentForm.Replace("{{AvatarURL}}", authenticator.GetAvatarURL(user.Username, Authenticator.AvatarURLType.Relative));
         commentForm = commentForm.Replace("{{GroupTitle}}", authenticator.ReturnGroupTitleByName(user.Group));
         commentForm = commentForm.Replace("{{Email}}", user.Email);
-        addCommentHTML = commentForm;
+        addCommentHTML = "<form action='" + Url.Action("Read", "Home", new { id = Model.Article.Id}) + "' method='post'>" + commentForm + "</form>";
     }
 }
 else
