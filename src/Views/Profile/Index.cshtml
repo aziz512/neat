@@ -2,12 +2,13 @@
 @using News.Models
 @{
     ViewBag.Title = "User Profile";
+    var authenticator = new Authenticator();
 }
 <script src="~/Scripts/DateTimePicker/jquery.js"></script>
 
 
 @{
-    var authenticator = new Authenticator();
+
 
     string template = HelpingMethods.getTemplateValue("profile");
     template = template.Replace("{{Username}}", Model.Username);

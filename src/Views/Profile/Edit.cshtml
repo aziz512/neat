@@ -2,11 +2,12 @@
 @using News.Models
 @{
     ViewBag.Title = "Edit";
+    var authenticator = new Authenticator();
 }
 
 @{
     var user = ViewBag.User as User;
-    var authenticator = new Authenticator();
+
     string template = News.Models.HelpingMethods.getTemplateValue("editProfile");
     template = template.Replace("{{Username}}",Model.Username);
     template = template.Replace("{{FirstName}}", Model.FirstName + "");

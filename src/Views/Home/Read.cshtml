@@ -4,10 +4,11 @@
 @using News.Controllers
 @{
     ViewBag.Title = "Read";
+    var authenticator = new Authenticator();
 }
 
 @{
-    var authenticator = new Authenticator();
+
     var user = ViewBag.User as User;
 
     string articleTemplate = HelpingMethods.getTemplateValue("read-article");

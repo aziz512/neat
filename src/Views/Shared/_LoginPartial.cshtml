@@ -6,6 +6,7 @@
 {
     var user = ViewBag.User as News.Models.User;
     var authenticator = new Authenticator();
+
     var template = HelpingMethods.getTemplateValue("login-small");
     template = Regex.Replace(Regex.Match(template, @"<logged>.*?<\/logged>", RegexOptions.Singleline).Value, @"<logged>|</logged>","");
     template = template.Replace("{{Username}}", user.Username);

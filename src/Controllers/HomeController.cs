@@ -26,7 +26,6 @@ namespace News.Controllers
         {
         }
 
-        Authenticator authenticator = new Authenticator();
         public static string getField(string name, int? id)
         {
             using (var db = new DatabaseContext())

@@ -11,10 +11,8 @@ using System.Web.Mvc;
 
 namespace News.Controllers
 {
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
-        DatabaseContext db = new DatabaseContext();
-        Authenticator authenticator = new Authenticator();
         public string Text { get; private set; }
         public ActionResult Index(string username) //страница авторизации
         {
